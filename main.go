@@ -17,16 +17,18 @@ func main() {
     panic(err)
   }
 
-  _, token, err := pie.Login(*email, password)
+  session, err := pie.Login(*email, password)
   if err != nil {
     panic(err)
   }
 
-  posts, err := pie.Stream(token)
+  posts, err := pie.Stream(session.Token)
   if err != nil {
     panic(err)
   }
-  for _, post := range posts {
-    fmt.Println(post.Title)
-  }
+  fmt.Printf("Found %d posts\n", len(posts))
+
+  post := posts[0]
+  fmt.Println(post.CreatedAt)
+  fmt.Println(post.Title)
 }
