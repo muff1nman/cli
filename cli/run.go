@@ -4,30 +4,34 @@ import (
   "../pie"
   "os"
   "fmt"
-  "flag"
+  flags "github.com/jessevdk/go-flags"
 )
 
-func Run() {
-  email := flag.String("email", "", "Your e-mail address to login.")
-  storage := flag.String("db", "pie.db", "The database file to use.")
-  new_chat_topic := flag.String("topic", "", "Topic to start a new chat.")
-  new_chat_comment := flag.String("thoughts", "", "First thoughts for the new chat.")
-  flag.Parse()
+type Options struct {
+  Email string `short:"e" long:"email" description:"Your e-mail address to login."`
+  Storage string `short:"d" long:"db" default:"pie.db" description:"The database file to use."`
+  Topic string `short:"t" long:"topic" description:"Topic to start a new chat."`
+  Thoughts string `long:"thoughts" description:"First thoughts for the new chat."`
+}
 
-  db, err := LoadDb(*storage)
+func Run() {
+  options := &Options{}
+  flags.Parse(options)
+
+  db, err := LoadDb(options.Storage)
   if err != nil { panic(err) }
 
-  if db.Token == "" && *email == "" {
+  if db.Token == "" && options.Email == "" {
     fmt.Println("You didn't login yet. Run the app with --email a@b.c")
     os.Exit(1)
   }
 
-  if *email != "" || db.Token == "" {
-    login(*email, *storage, db)
+  if options.Email != "" || db.Token == "" {
+    login(options.Email, options.Storage, db)
   }
 
-  if *new_chat_topic != "" {
-    post, err := pie.CreatePost(*new_chat_topic, db.Token)
+  if options.Topic != "" {
+    post, err := pie.CreatePost(options.Topic, db.Token)
 
     if err != nil {
       fmt.Println(err)
@@ -41,8 +45,8 @@ func Run() {
       os.Exit(1)
     }
 
-    if new_chat_comment != nil {
-      _, err := pie.CreateComment(post.Id, *new_chat_comment, db.Token)
+    if options.Thoughts != "" {
+      _, err := pie.CreateComment(post.Id, options.Thoughts, db.Token)
 
       if err != nil {
         fmt.Println(err)
