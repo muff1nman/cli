@@ -8,6 +8,7 @@ type Post struct {
   Id int `json:"id"`
   CompanyId int `json:"company_id"`
   UserId int `json:"user_id"`
+  CommentsCount int `json:"comments_count"`
   Title string `json:"title"`
   Description string `json:"description"`
   Url string `json:"url"`
