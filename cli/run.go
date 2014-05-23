@@ -21,6 +21,8 @@ type Options struct {
   } `command:"new-post"`
   Stream struct {
   } `command:"stream"`
+  Notifications struct {
+  } `command:"notifications"`
 }
 
 func Run() (err error) {
@@ -46,6 +48,8 @@ func Run() (err error) {
     err = newPost(options, db)
   case "stream":
     err = stream(options, db)
+  case "notifications":
+    err = notifications(options, db)
   }
   return
 }
@@ -85,6 +89,25 @@ func stream(options *Options, db *Db) (err error) {
 
   for _, post := range posts {
     fmt.Printf("{%d} %s\ncomments: %d\n\n", post.Id, post.Title, post.CommentsCount)
+  }
+  return
+}
+
+func notifications(options *Options, db *Db) (err error) {
+  notifications, err := pie.GetNotifications(db.UserId, db.Token)
+  if err != nil { return }
+
+  for _, notification := range notifications {
+    new_msg := ""
+    if notification.Seen {
+      new_msg = "NEW! "
+    }
+    fmt.Printf("%sFrom: %d\n %s %s(%d)\n\n",
+      new_msg,
+      notification.SenderId,
+      notification.Message,
+      notification.ObjectType,
+      notification.ObjectId)
   }
   return
 }
