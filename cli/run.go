@@ -11,11 +11,11 @@ import (
 type Options struct {
   Storage string `short:"d" long:"db" default:"pie.db" description:"The database file to use."`
 
-  Login *struct {
+  Login struct {
     Email string `short:"e" long:"email" description:"Your e-mail address to login." required:"true"`
   } `command:"login"`
 
-  NewPost *struct {
+  NewPost struct {
     Topic string `short:"t" long:"topic" description:"Topic to start a new chat." required:"true"`
     Thoughts string `long:"thoughts" description:"First thoughts for the new chat."`
   } `command:"new-post"`
