@@ -2,8 +2,6 @@ package pie
 import (
   "fmt"
   "time"
-  "errors"
-  "github.com/jmcvetta/napping"
 )
 
 type Company struct {
@@ -16,7 +14,7 @@ type Company struct {
 }
 
 const (
-  COMPANY_URL = URL_PREFIX + "/companies/%d"
+  COMPANY_URL = "/companies/%d"
 )
 
 func companyUrl (id int) string {
@@ -25,12 +23,6 @@ func companyUrl (id int) string {
 
 func GetCompany(id int, token string) (company *Company, err error) {
   company = &Company{}
-  params := &napping.Params{"token": token}
-  resp, err := napping.Get(companyUrl(id), params, company, nil)
-  if err != nil { return }
-  if resp.Status() != 200 {
-    err = errors.New("Error fetching company")
-    return
-  }
+  err = GetPieResource(companyUrl(id), token, company, nil)
   return
 }

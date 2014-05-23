@@ -1,8 +1,6 @@
 package pie
 import (
   "time"
-  "errors"
-  "github.com/jmcvetta/napping"
 )
 
 type Post struct {
@@ -25,17 +23,11 @@ type Post struct {
 }
 
 const (
-  STREAM_URL = URL_PREFIX + "/posts"
+  STREAM_URL = "/posts"
 )
 
 func Stream(token string) (posts []*Post, err error) {
   posts = []*Post{}
-  params := &napping.Params{"type": "stream", "token": token}
-  resp, err := napping.Get(STREAM_URL, params, &posts, nil)
-  if err != nil { return }
-  if resp.Status() != 200 {
-    err = errors.New("Error fetching stream")
-    return
-  }
+  err = GetPieResource(STREAM_URL, token, &posts, &map[string]string{"type": "stream"})
   return
 }

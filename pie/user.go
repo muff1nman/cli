@@ -2,8 +2,6 @@ package pie
 import (
   "fmt"
   "time"
-  "errors"
-  "github.com/jmcvetta/napping"
 )
 
 type User struct {
@@ -21,8 +19,8 @@ type User struct {
 }
 
 const (
-  USER_URL = URL_PREFIX + "/users/%d"
-  COMPANY_USERS_URL = URL_PREFIX + "/companies/%d/users"
+  USER_URL = "/users/%d"
+  COMPANY_USERS_URL = "/companies/%d/users"
 )
 
 func userUrl (id int) string {
@@ -35,24 +33,12 @@ func companyUsersUrl (company_id int) string {
 
 func GetUser(id int, token string) (user *User, err error) {
   user = &User{}
-  params := &napping.Params{"token": token}
-  resp, err := napping.Get(userUrl(id), params, user, nil)
-  if err != nil { return }
-  if resp.Status() != 200 {
-    err = errors.New("Error fetching user")
-    return
-  }
+  err = GetPieResource(userUrl(id), token, user, nil)
   return
 }
 
 func GetCompanyUsers(company_id int, token string) (users []*User, err error) {
   users = []*User{}
-  params := &napping.Params{"token": token}
-  resp, err := napping.Get(companyUsersUrl(company_id), params, &users, nil)
-  if err != nil { return }
-  if resp.Status() != 200 {
-    err = errors.New("Error fetching company users")
-    return
-  }
+  err = GetPieResource(companyUsersUrl(company_id), token, &users, nil)
   return
 }

@@ -2,8 +2,6 @@ package pie
 import (
   "fmt"
   "time"
-  "errors"
-  "github.com/jmcvetta/napping"
 )
 
 type Notification struct {
@@ -18,7 +16,7 @@ type Notification struct {
 }
 
 const (
-  NOTIFICATIONS_URL = URL_PREFIX + "/users/%d/notifications"
+  NOTIFICATIONS_URL = "/users/%d/notifications"
 )
 
 func notificationsUrl (user_id int) string {
@@ -27,12 +25,6 @@ func notificationsUrl (user_id int) string {
 
 func GetNotifications(user_id int, token string) (notifications []*Notification, err error) {
   notifications = []*Notification{}
-  params := &napping.Params{"token": token}
-  resp, err := napping.Get(notificationsUrl(user_id), params, &notifications, nil)
-  if err != nil { return }
-  if resp.Status() != 200 {
-    err = errors.New("Error fetching notifications")
-    return
-  }
+  err = GetPieResource(notificationsUrl(user_id), token, &notifications, nil)
   return
 }
