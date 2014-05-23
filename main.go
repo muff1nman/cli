@@ -69,7 +69,19 @@ func main() {
     panic(err)
   }
   fmt.Println(user)
-  
+
+  company, err := pie.GetCompany(user.CompanyId, db.Token)
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(company)
+
+  users, err := pie.GetCompanyUsers(user.CompanyId, db.Token)
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(len(users))
+  fmt.Println(users[0])
 
   posts, err := pie.Stream(db.Token)
   if err != nil {

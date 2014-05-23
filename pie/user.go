@@ -22,10 +22,15 @@ type User struct {
 
 const (
   USER_URL = URL_PREFIX + "/users/%d"
+  COMPANY_USERS_URL = URL_PREFIX + "/companies/%d/users"
 )
 
 func userUrl (id int) string {
   return fmt.Sprintf(USER_URL, id)
+}
+
+func companyUsersUrl (company_id int) string {
+  return fmt.Sprintf(COMPANY_USERS_URL, company_id)
 }
 
 func GetUser(id int, token string) (user *User, err error) {
@@ -35,6 +40,18 @@ func GetUser(id int, token string) (user *User, err error) {
   if err != nil { return }
   if resp.Status() != 200 {
     err = errors.New("Error fetching user")
+    return
+  }
+  return
+}
+
+func GetCompanyUsers(company_id int, token string) (users []*User, err error) {
+  users = []*User{}
+  params := &napping.Params{"token": token}
+  resp, err := napping.Get(companyUsersUrl(company_id), params, &users, nil)
+  if err != nil { return }
+  if resp.Status() != 200 {
+    err = errors.New("Error fetching company users")
     return
   }
   return
