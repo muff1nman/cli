@@ -1,9 +1,15 @@
 package main
 
 import (
+  "os"
+  "fmt"
   "./cli"
 )
 
 func main() {
-  cli.Run()
+  err := cli.Run()
+  if err != nil {
+    fmt.Println(err)
+    os.Exit(1)
+  }
 }
