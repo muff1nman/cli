@@ -34,7 +34,7 @@ func GetCompany(id int, token string) (company *Company, err error) {
   return
 }
 
-func GetRawCompany(user_id int, token string) (res string, err error) {
-  res, err = GetRawPieResource(BuildCompanyRequest(user_id, token))
+func GetRawCompany(id int, token string) (res string, err error) {
+  res, err = GetRawPieResource(BuildCompanyRequest(id, token))
   return
 }
