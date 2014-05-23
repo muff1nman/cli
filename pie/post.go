@@ -1,5 +1,6 @@
 package pie
 import (
+  "fmt"
   "time"
 )
 
@@ -22,9 +23,21 @@ type Post struct {
   Secret bool `json:"secret"`
 }
 
+type NewPostReq struct {
+  Title string `json:"url"`
+}
+type UpdatePostReq struct {
+}
+
 const (
+  NEW_POST_URL = "/posts"
+  UPDATE_POST_URL = "/posts/%d"
   STREAM_URL = "/posts"
 )
+
+func getUpdatePostUrl(id int) string {
+  return fmt.Sprintf(UPDATE_POST_URL, id)
+}
 
 func BuildStreamRequest(token string) *PieGetRequest{
   return &PieGetRequest{
@@ -42,5 +55,34 @@ func Stream(token string) (posts []*Post, err error) {
 
 func RawStream(token string) (res string, err error) {
   res, err = GetRawPieResource(BuildStreamRequest(token))
+  return
+}
+
+func CreatePost(topic string, token string) (post *Post, err error) {
+  payload := &NewPostReq {
+    Title: topic,
+  }
+  post = &Post{}
+  req := &PiePostRequest{
+    Url: NEW_POST_URL,
+    Payload: payload,
+    Token: token,
+  }
+
+  err = PostPieResource(req, post)
+  return
+}
+
+func PublishPost(id int, token string) (post *Post, err error) {
+  payload := &UpdatePostReq {
+  }
+  post = &Post{}
+  req := &PiePutRequest{
+    Url: getUpdatePostUrl(id),
+    Payload: payload,
+    Token: token,
+  }
+
+  err = PutPieResource(req, post)
   return
 }

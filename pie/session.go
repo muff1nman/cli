@@ -1,7 +1,5 @@
 package pie
 import (
-  "errors"
-  "github.com/jmcvetta/napping"
 )
 
 type LoginReq struct {
@@ -15,7 +13,7 @@ type Session struct {
 }
 
 const (
-  LOGIN_URL = URL_PREFIX + "/sessions"
+  LOGIN_URL = "/sessions"
 )
 
 func Login(email string, password string) (session *Session, err error) {
@@ -24,11 +22,11 @@ func Login(email string, password string) (session *Session, err error) {
     Password: password,
   }
   session = &Session{}
-  resp, err := napping.Post(LOGIN_URL, payload, session, nil)
-  if err != nil { return }
-  if resp.Status() != 201 {
-    err = errors.New("Wrong e-mail or password")
-    return
+  req := &PiePostRequest{
+    Url: LOGIN_URL,
+    Payload: payload,
   }
+
+  err = PostPieResource(req, session)
   return
 }
