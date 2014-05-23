@@ -2,6 +2,7 @@ package cli
 
 import (
   "../pie"
+  "os"
   "fmt"
   "errors"
   flags "github.com/jessevdk/go-flags"
@@ -9,9 +10,11 @@ import (
 
 type Options struct {
   Storage string `short:"d" long:"db" default:"pie.db" description:"The database file to use."`
+
   Login *struct {
     Email string `short:"e" long:"email" description:"Your e-mail address to login." required:"true"`
   } `command:"login"`
+
   NewPost *struct {
     Topic string `short:"t" long:"topic" description:"Topic to start a new chat." required:"true"`
     Thoughts string `long:"thoughts" description:"First thoughts for the new chat."`
@@ -22,7 +25,9 @@ func Run() (err error) {
   options := &Options{}
   parser := flags.NewParser(options, flags.Default)
   _, err = parser.Parse()
-  if err != nil { return }
+  if err != nil {
+    os.Exit(1)
+  }
 
   db, err := LoadDb(options.Storage)
 
