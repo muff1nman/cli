@@ -32,43 +32,43 @@ func Run() (err error) {
   db, err := LoadDb(options.Storage)
 
   if db.Token == "" && options.Login == nil {
-    err = errors.New("You didn't login yet. Run the app with --email a@b.c")
+    err = errors.New("You didn't login yet.")
     return
   }
 
   switch parser.Command.Active.Name {
   case "login":
-    err = login(options.Login.Email, options.Storage, db)
+    err = login(options, db)
   case "new-post":
-    err = newPost(options.NewPost.Topic, options.NewPost.Thoughts, db)
+    err = newPost(options, db)
   }
   return
 }
 
-func login(email string, storage string, db *Db) (err error) {
+func login(options *Options, db *Db) (err error) {
   var password string
   fmt.Printf("Password: ")
   _, err = fmt.Scanf("%s", &password)
   if err != nil { return }
 
-  session, err := pie.Login(email, password)
+  session, err := pie.Login(options.Login.Email, password)
   if err != nil { return }
 
   db.Token = session.Token
   db.UserId = session.UserId
-  SaveDb(db, storage)
+  SaveDb(db, options.Storage)
   return
 }
 
-func newPost(topic string, thoughts string, db *Db) (err error) {
-  post, err := pie.CreatePost(topic, db.Token)
+func newPost(options *Options, db *Db) (err error) {
+  post, err := pie.CreatePost(options.NewPost.Topic, db.Token)
   if err != nil { return }
 
   post, err = pie.PublishPost(post.Id, db.Token)
   if err != nil { return }
 
-  if thoughts != "" {
-    _, err = pie.CreateComment(post.Id, thoughts, db.Token)
+  if options.NewPost.Thoughts != "" {
+    _, err = pie.CreateComment(post.Id, options.NewPost.Thoughts, db.Token)
     if err != nil { return }
   }
   return
