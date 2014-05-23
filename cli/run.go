@@ -28,15 +28,16 @@ func Run() (err error) {
   if err != nil {
     os.Exit(1)
   }
+  action := parser.Command.Active.Name
 
   db, err := LoadDb(options.Storage)
 
-  if db.Token == "" && options.Login == nil {
+  if db.Token == "" && action != "login" {
     err = errors.New("You didn't login yet.")
     return
   }
 
-  switch parser.Command.Active.Name {
+  switch action {
   case "login":
     err = login(options, db)
   case "new-post":
