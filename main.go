@@ -71,6 +71,11 @@ func main() {
   fmt.Println(len(notifications))
   fmt.Println(notifications[0])
 
+  tags, err := pie.GetAllTags(db.Token)
+  if err != nil { panic(err) }
+  fmt.Println(len(tags))
+  fmt.Println(tags[0])
+
   company, err := pie.GetCompany(user.CompanyId, db.Token)
   if err != nil { panic(err) }
   fmt.Println(company)
