@@ -23,12 +23,20 @@ func notificationsUrl (user_id int) string {
   return fmt.Sprintf(NOTIFICATIONS_URL, user_id)
 }
 
-func GetNotifications(user_id int, token string) (notifications []*Notification, err error) {
-  notifications = []*Notification{}
-  request := &PieGetRequest{
+func BuildNotificationsRequest(user_id int, token string) *PieGetRequest {
+  return &PieGetRequest{
     Url: notificationsUrl(user_id),
     Token: token,
   }
-  err = GetPieResource(request, &notifications)
+}
+
+func GetNotifications(user_id int, token string) (notifications []*Notification, err error) {
+  notifications = []*Notification{}
+  err = GetPieResource(BuildNotificationsRequest(user_id, token), &notifications)
+  return
+}
+
+func GetRawNotifications(user_id int, token string) (res string, err error) {
+  res, err = GetRawPieResource(BuildNotificationsRequest(user_id, token))
   return
 }

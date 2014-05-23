@@ -32,8 +32,19 @@ func GetPieResource(request *PieGetRequest, response interface{}) (err error) {
   res, err := napping.Get(URL_PREFIX + request.Url, &params, response, nil)
   if err != nil { return }
   if res.Status() != 200 {
-    err = errors.New("Status code id not 200")
+    err = errors.New("Status code is not 200")
   }
+  return
+}
+
+func GetRawPieResource(request *PieGetRequest) (body string, err error) {
+  params := request.GetParams()
+  res, err := napping.Get(URL_PREFIX + request.Url, &params, nil, nil)
+  if err != nil { return }
+  if res.Status() != 200 {
+    err = errors.New("Status code is not 200")
+  }
+  body = res.RawText()
   return
 }
 

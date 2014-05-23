@@ -21,12 +21,20 @@ func companyUrl (id int) string {
   return fmt.Sprintf(COMPANY_URL, id)
 }
 
-func GetCompany(id int, token string) (company *Company, err error) {
-  company = &Company{}
-  request := &PieGetRequest{
+func BuildCompanyRequest(id int, token string) *PieGetRequest {
+  return &PieGetRequest{
     Url: companyUrl(id),
     Token: token,
   }
-  err = GetPieResource(request, company)
+}
+
+func GetCompany(id int, token string) (company *Company, err error) {
+  company = &Company{}
+  err = GetPieResource(BuildCompanyRequest(id, token), company)
+  return
+}
+
+func GetRawCompany(user_id int, token string) (res string, err error) {
+  res, err = GetRawPieResource(BuildCompanyRequest(user_id, token))
   return
 }

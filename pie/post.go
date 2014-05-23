@@ -26,13 +26,21 @@ const (
   STREAM_URL = "/posts"
 )
 
-func Stream(token string) (posts []*Post, err error) {
-  posts = []*Post{}
-  request := &PieGetRequest{
+func BuildStreamRequest(token string) *PieGetRequest{
+  return &PieGetRequest{
     Url: STREAM_URL,
     Token: token,
     ExtraParams: map[string]string{"type": "stream"},
   }
-  err = GetPieResource(request, &posts)
+}
+
+func Stream(token string) (posts []*Post, err error) {
+  posts = []*Post{}
+  err = GetPieResource(BuildStreamRequest(token), &posts)
+  return
+}
+
+func RawStream(token string) (res string, err error) {
+  res, err = GetRawPieResource(BuildStreamRequest(token))
   return
 }

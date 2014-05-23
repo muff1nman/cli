@@ -31,22 +31,38 @@ func companyUsersUrl (company_id int) string {
   return fmt.Sprintf(COMPANY_USERS_URL, company_id)
 }
 
-func GetUser(id int, token string) (user *User, err error) {
-  user = &User{}
-  request := &PieGetRequest{
+func BuildUserRequest(id int, token string) *PieGetRequest{
+  return &PieGetRequest{
     Url: userUrl(id),
     Token: token,
   }
-  err = GetPieResource(request, user)
+}
+
+func BuildCompanyUsersRequest(company_id int, token string) *PieGetRequest{
+  return &PieGetRequest{
+    Url: companyUsersUrl(company_id),
+    Token: token,
+  }
+}
+
+func GetUser(id int, token string) (user *User, err error) {
+  user = &User{}
+  err = GetPieResource(BuildUserRequest(id, token), user)
+  return
+}
+
+func GetRawUser(id int, token string) (res string, err error) {
+  res, err = GetRawPieResource(BuildUserRequest(id, token))
   return
 }
 
 func GetCompanyUsers(company_id int, token string) (users []*User, err error) {
   users = []*User{}
-  request := &PieGetRequest{
-    Url: companyUsersUrl(company_id),
-    Token: token,
-  }
-  err = GetPieResource(request, &users)
+  err = GetPieResource(BuildCompanyUsersRequest(company_id, token), &users)
+  return
+}
+
+func GetRawCompanyUsers(company_id int, token string) (res string, err error) {
+  res, err = GetRawPieResource(BuildCompanyUsersRequest(company_id, token))
   return
 }

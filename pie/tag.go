@@ -13,12 +13,20 @@ const (
   ALL_TAGS_URL = "/tags"
 )
 
-func GetAllTags(token string) (tags []*Tag, err error) {
-  tags = []*Tag{}
-  request := &PieGetRequest{
+func BuildAllTagsRequest(token string) *PieGetRequest{
+  return &PieGetRequest{
     Url: ALL_TAGS_URL,
     Token: token,
   }
-  err = GetPieResource(request, &tags)
+}
+
+func GetAllTags(token string) (tags []*Tag, err error) {
+  tags = []*Tag{}
+  err = GetPieResource(BuildAllTagsRequest(token), &tags)
+  return
+}
+
+func GetRawAllTags(token string) (res string, err error) {
+  res, err = GetRawPieResource(BuildAllTagsRequest(token))
   return
 }
