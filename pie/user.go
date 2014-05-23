@@ -33,12 +33,20 @@ func companyUsersUrl (company_id int) string {
 
 func GetUser(id int, token string) (user *User, err error) {
   user = &User{}
-  err = GetPieResource(userUrl(id), token, user, nil)
+  request := &PieGetRequest{
+    Url: userUrl(id),
+    Token: token,
+  }
+  err = GetPieResource(request, user)
   return
 }
 
 func GetCompanyUsers(company_id int, token string) (users []*User, err error) {
   users = []*User{}
-  err = GetPieResource(companyUsersUrl(company_id), token, &users, nil)
+  request := &PieGetRequest{
+    Url: companyUsersUrl(company_id),
+    Token: token,
+  }
+  err = GetPieResource(request, &users)
   return
 }

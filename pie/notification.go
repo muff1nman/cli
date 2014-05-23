@@ -25,6 +25,10 @@ func notificationsUrl (user_id int) string {
 
 func GetNotifications(user_id int, token string) (notifications []*Notification, err error) {
   notifications = []*Notification{}
-  err = GetPieResource(notificationsUrl(user_id), token, &notifications, nil)
+  request := &PieGetRequest{
+    Url: notificationsUrl(user_id),
+    Token: token,
+  }
+  err = GetPieResource(request, &notifications)
   return
 }

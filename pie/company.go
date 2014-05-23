@@ -23,6 +23,10 @@ func companyUrl (id int) string {
 
 func GetCompany(id int, token string) (company *Company, err error) {
   company = &Company{}
-  err = GetPieResource(companyUrl(id), token, company, nil)
+  request := &PieGetRequest{
+    Url: companyUrl(id),
+    Token: token,
+  }
+  err = GetPieResource(request, company)
   return
 }

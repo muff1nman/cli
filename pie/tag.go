@@ -15,6 +15,10 @@ const (
 
 func GetAllTags(token string) (tags []*Tag, err error) {
   tags = []*Tag{}
-  err = GetPieResource(ALL_TAGS_URL, token, &tags, nil)
+  request := &PieGetRequest{
+    Url: ALL_TAGS_URL,
+    Token: token,
+  }
+  err = GetPieResource(request, &tags)
   return
 }

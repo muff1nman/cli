@@ -28,6 +28,11 @@ const (
 
 func Stream(token string) (posts []*Post, err error) {
   posts = []*Post{}
-  err = GetPieResource(STREAM_URL, token, &posts, &map[string]string{"type": "stream"})
+  request := &PieGetRequest{
+    Url: STREAM_URL,
+    Token: token,
+    ExtraParams: map[string]string{"type": "stream"},
+  }
+  err = GetPieResource(request, &posts)
   return
 }
