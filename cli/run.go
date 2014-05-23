@@ -11,7 +11,7 @@ func Run() {
   email := flag.String("email", "", "Your e-mail address to login.")
   storage := flag.String("db", "pie.db", "The database file to use.")
   new_chat_topic := flag.String("topic", "", "Topic to start a new chat.")
-  // new_chat_comment := flag.String("comment", "", "First comment for the new chat.")
+  new_chat_comment := flag.String("thoughts", "", "First thoughts for the new chat.")
   flag.Parse()
 
   db, err := LoadDb(*storage)
@@ -39,6 +39,15 @@ func Run() {
     if err != nil {
       fmt.Println(err)
       os.Exit(1)
+    }
+
+    if new_chat_comment != nil {
+      _, err := pie.CreateComment(post.Id, *new_chat_comment, db.Token)
+
+      if err != nil {
+        fmt.Println(err)
+        os.Exit(1)
+      }
     }
 
     fmt.Println(post)
