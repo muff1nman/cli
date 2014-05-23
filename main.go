@@ -60,8 +60,16 @@ func main() {
     }
     // db.UserId = session.UserId
     db.Token = session.Token
+    db.UserId = session.UserId
     SaveDb(db, *storage)
   }
+
+  user, err := pie.GetUser(db.UserId, db.Token)
+  if err != nil {
+    panic(err)
+  }
+  fmt.Println(user)
+  
 
   posts, err := pie.Stream(db.Token)
   if err != nil {
