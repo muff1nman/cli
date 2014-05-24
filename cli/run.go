@@ -23,6 +23,9 @@ type Options struct {
   } `command:"stream"`
   Notifications struct {
   } `command:"notifications"`
+  Comments struct {
+    PostId int `short:"p" long:"post" description:"ID of the post to add the comment" required:"true"`
+  } `command:"comments"`
   NewComment struct {
     Text string `short:"t" long:"text" description:"Text for your new comment" required:"true"`
     PostId int `short:"p" long:"post" description:"ID of the post to add the comment" required:"true"`
@@ -52,6 +55,8 @@ func Run() (err error) {
     err = newPost(options, db)
   case "stream":
     err = stream(options, db)
+  case "comments":
+    err = comments(options, db)
   case "notifications":
     err = notifications(options, db)
   case "new-comment":
@@ -100,6 +105,16 @@ func stream(options *Options, db *Db) (err error) {
 
   for _, post := range posts {
     fmt.Printf("{%d} %s\ncomments: %d\n\n", post.Id, post.Title, post.CommentsCount)
+  }
+  return
+}
+
+func comments(options *Options, db *Db) (err error) {
+  comments, err := pie.GetComments(options.Comments.PostId, db.Token)
+  if err != nil { return }
+
+  for _, comment := range comments {
+    fmt.Printf("From: %d\n%s\n\n", comment.UserId, comment.Text)
   }
   return
 }
