@@ -23,6 +23,10 @@ type Options struct {
   } `command:"stream"`
   Notifications struct {
   } `command:"notifications"`
+  Comment struct {
+    Text string `short:"t" long:"text" description:"Text for your new comment" required:"true"`
+    PostId int `short:"p" long:"post" description:"ID of the post to add the comment" required:"true"`
+  } `command:"comment"`
 }
 
 func Run() (err error) {
@@ -50,6 +54,8 @@ func Run() (err error) {
     err = stream(options, db)
   case "notifications":
     err = notifications(options, db)
+  case "comment":
+    err = comment(options, db)
   }
   return
 }
@@ -80,6 +86,11 @@ func newPost(options *Options, db *Db) (err error) {
     _, err = pie.CreateComment(post.Id, options.NewPost.Thoughts, db.Token)
     if err != nil { return }
   }
+  return
+}
+
+func comment(options *Options, db *Db) (err error) {
+  _, err = pie.CreateComment(options.Comment.PostId, options.Comment.Text, db.Token)
   return
 }
 
