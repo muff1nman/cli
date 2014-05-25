@@ -33,6 +33,8 @@ type Options struct {
   } `command:"new-comment"`
   AllTags struct {
   } `command:"all-tags"`
+  MyTags struct {
+  } `command:"my-tags"`
 }
 
 func Run() (err error) {
@@ -69,6 +71,8 @@ func Run() (err error) {
     err = newComment(options, db)
   case "all-tags":
     err = allTags(options, db)
+  case "my-tags":
+    err = myTags(options, db)
   }
   return
 }
@@ -148,6 +152,16 @@ func notifications(options *Options, db *Db) (err error) {
 
 func allTags(options *Options, db *Db) (err error) {
   tags, err := pie.GetAllTags(db.Token)
+  if err != nil { return }
+
+  for _, tag := range tags {
+    fmt.Printf("%s (%d)\n", tag.Name, tag.NumPosts)
+  }
+  return
+}
+
+func myTags(options *Options, db *Db) (err error) {
+  tags, err := pie.GetOwnTags(db.UserId, db.Token)
   if err != nil { return }
 
   for _, tag := range tags {
