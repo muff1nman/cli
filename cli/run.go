@@ -9,7 +9,8 @@ import (
 )
 
 type Options struct {
-  Storage string `short:"d" long:"db" default:"pie.db" description:"The database file to use."`
+  Storage string `long:"db" default:"pie.db" description:"The database file to use."`
+  UrlPrefix string `long:"url" default:"https://api.piethis.com/v1" description:"The API url prefix, including version."`
 
   Login struct {
     Email string `short:"e" long:"email" description:"Your e-mail address to login." required:"true"`
@@ -39,6 +40,9 @@ func Run() (err error) {
   if err != nil {
     os.Exit(1)
   }
+
+  pie.UrlPrefix = options.UrlPrefix
+
   action := parser.Command.Active.Name
 
   db, err := LoadDb(options.Storage)

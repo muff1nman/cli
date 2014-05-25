@@ -4,8 +4,8 @@ import (
   "errors"
   "github.com/jmcvetta/napping"
 )
-const (
-  URL_PREFIX = "http://localhost:3000/v1"
+var (
+  UrlPrefix = "https://api.piethis.com/v1"
 )
 
 type PieGetRequest struct {
@@ -27,20 +27,20 @@ type PiePutRequest struct {
 }
 
 func (this PieGetRequest) GetUrl() string {
-  return URL_PREFIX + this.Url
+  return UrlPrefix + this.Url
 }
 func (this PiePostRequest) GetUrl() string {
   if this.Token == "" {
-    return URL_PREFIX + this.Url
+    return UrlPrefix + this.Url
   } else {
-    return URL_PREFIX + this.Url + "?token=" + this.Token
+    return UrlPrefix + this.Url + "?token=" + this.Token
   }
 }
 func (this PiePutRequest) GetUrl() string {
   if this.Token == "" {
-    return URL_PREFIX + this.Url
+    return UrlPrefix + this.Url
   } else {
-    return URL_PREFIX + this.Url + "?token=" + this.Token
+    return UrlPrefix + this.Url + "?token=" + this.Token
   }
 }
 
