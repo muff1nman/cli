@@ -35,6 +35,9 @@ type Options struct {
   } `command:"all-tags"`
   MyTags struct {
   } `command:"my-tags"`
+  Company struct {
+    CompanyId int `short:"c" long:"company" description:"ID of the company." required:"true"`
+  } `command:"company"`
 }
 
 func Run() (err error) {
@@ -73,6 +76,8 @@ func Run() (err error) {
     err = allTags(options, db)
   case "my-tags":
     err = myTags(options, db)
+  case "company":
+    err = company(options, db)
   }
   return
 }
@@ -167,5 +172,13 @@ func myTags(options *Options, db *Db) (err error) {
   for _, tag := range tags {
     fmt.Printf("%s (%d)\n", tag.Name, tag.NumPosts)
   }
+  return
+}
+
+func company(options *Options, db *Db) (err error) {
+  company, err := pie.GetCompany(options.Company.CompanyId, db.Token)
+  if err != nil { return }
+
+  fmt.Printf("%s (%s)\n", company.Name, company.Domain)
   return
 }
