@@ -24,66 +24,65 @@ type Post struct {
   Secret bool `json:"secret"`
 }
 
-type NewPostReq struct {
+type newPostReq struct {
   Title string `json:"url"`
 }
-type UpdatePostReq struct {
-}
 
-const (
-  NEW_POST_URL = "/posts"
-  UPDATE_POST_URL = "/posts/%d"
-  STREAM_URL = "/posts"
-)
+type updatePostReq struct {
+}
 
 func getUpdatePostUrl(id int) string {
-  return fmt.Sprintf(UPDATE_POST_URL, id)
+  return fmt.Sprintf("/posts/%d", id)
 }
 
-func BuildStreamRequest(token string) *PieGetRequest{
-  return &PieGetRequest{
-    Url: STREAM_URL,
+func buildStreamRequest(token string) *pieGetRequest{
+  return &pieGetRequest{
+    Url: "/posts",
     Token: token,
     ExtraParams: map[string]string{"type": "stream"},
   }
 }
 
+// Returns the stream posts for the current user.
 func Stream(token string) (posts []*Post, err error) {
   posts = []*Post{}
-  err = GetPieResource(BuildStreamRequest(token), &posts)
+  err = getPieResource(buildStreamRequest(token), &posts)
   return
 }
 
+// Returns the stream posts for the current user. Returns raw response.
 func RawStream(token string) (res string, err error) {
-  res, err = GetRawPieResource(BuildStreamRequest(token))
+  res, err = getRawPieResource(buildStreamRequest(token))
   return
 }
 
+// Creates a new post with a topic.
 func CreatePost(topic string, token string) (post *Post, err error) {
-  payload := &NewPostReq {
+  payload := &newPostReq {
     Title: topic,
   }
   post = &Post{}
-  req := &PiePostRequest{
-    Url: NEW_POST_URL,
+  req := &piePostRequest{
+    Url: "/posts",
     Payload: payload,
     Token: token,
   }
 
-  err = PostPieResource(req, post)
+  err = postPieResource(req, post)
   return
 }
 
+// Makes a new post published.
 func PublishPost(id int, token string) (post *Post, err error) {
-  payload := &UpdatePostReq {
+  payload := &updatePostReq {
   }
   post = &Post{}
-  req := &PiePutRequest{
+  req := &piePutRequest{
     Url: getUpdatePostUrl(id),
     Payload: payload,
     Token: token,
   }
 
-  err = PutPieResource(req, post)
+  err = putPieResource(req, post)
   return
 }

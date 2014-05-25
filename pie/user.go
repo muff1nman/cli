@@ -18,51 +18,50 @@ type User struct {
   CreatedAt time.Time `json:"created_at"`
 }
 
-const (
-  USER_URL = "/users/%d"
-  COMPANY_USERS_URL = "/companies/%d/users"
-)
-
 func userUrl (id int) string {
-  return fmt.Sprintf(USER_URL, id)
+  return fmt.Sprintf("/users/%d", id)
 }
 
 func companyUsersUrl (company_id int) string {
-  return fmt.Sprintf(COMPANY_USERS_URL, company_id)
+  return fmt.Sprintf("/companies/%d/users", company_id)
 }
 
-func BuildUserRequest(id int, token string) *PieGetRequest{
-  return &PieGetRequest{
+func buildUserRequest(id int, token string) *pieGetRequest{
+  return &pieGetRequest{
     Url: userUrl(id),
     Token: token,
   }
 }
 
-func BuildCompanyUsersRequest(company_id int, token string) *PieGetRequest{
-  return &PieGetRequest{
+func buildCompanyUsersRequest(company_id int, token string) *pieGetRequest{
+  return &pieGetRequest{
     Url: companyUsersUrl(company_id),
     Token: token,
   }
 }
 
+// Gets a user by ID.
 func GetUser(id int, token string) (user *User, err error) {
   user = &User{}
-  err = GetPieResource(BuildUserRequest(id, token), user)
+  err = getPieResource(buildUserRequest(id, token), user)
   return
 }
 
+// Gets a user by ID. Returns a raw response.
 func GetRawUser(id int, token string) (res string, err error) {
-  res, err = GetRawPieResource(BuildUserRequest(id, token))
+  res, err = getRawPieResource(buildUserRequest(id, token))
   return
 }
 
+// Gets all users for a given company.
 func GetCompanyUsers(company_id int, token string) (users []*User, err error) {
   users = []*User{}
-  err = GetPieResource(BuildCompanyUsersRequest(company_id, token), &users)
+  err = getPieResource(buildCompanyUsersRequest(company_id, token), &users)
   return
 }
 
+// Gets all users for a given company. Returns a raw response.
 func GetRawCompanyUsers(company_id int, token string) (res string, err error) {
-  res, err = GetRawPieResource(BuildCompanyUsersRequest(company_id, token))
+  res, err = getRawPieResource(buildCompanyUsersRequest(company_id, token))
   return
 }

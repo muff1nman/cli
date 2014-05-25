@@ -2,7 +2,7 @@ package pie
 import (
 )
 
-type LoginReq struct {
+type loginReq struct {
   Email string `json:"email"`
   Password string `json:"password"`
 }
@@ -12,21 +12,18 @@ type Session struct {
   UserId int `json:"user_id"`
 }
 
-const (
-  LOGIN_URL = "/sessions"
-)
-
+// Creates a new session. If the e-mail or password is wrong, it will return an error.
 func Login(email string, password string) (session *Session, err error) {
-  payload := &LoginReq {
+  payload := &loginReq {
     Email: email,
     Password: password,
   }
   session = &Session{}
-  req := &PiePostRequest{
-    Url: LOGIN_URL,
+  req := &piePostRequest{
+    Url: "/sessions",
     Payload: payload,
   }
 
-  err = PostPieResource(req, session)
+  err = postPieResource(req, session)
   return
 }

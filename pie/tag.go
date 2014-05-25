@@ -9,24 +9,22 @@ type Tag struct {
   LastActivity time.Time `json:"last_activity"`
 }
 
-const (
-  ALL_TAGS_URL = "/tags"
-)
-
-func BuildAllTagsRequest(token string) *PieGetRequest{
-  return &PieGetRequest{
-    Url: ALL_TAGS_URL,
+func buildAllTagsRequest(token string) *pieGetRequest{
+  return &pieGetRequest{
+    Url: "/tags",
     Token: token,
   }
 }
 
+// Returns all tags for the current user.
 func GetAllTags(token string) (tags []*Tag, err error) {
   tags = []*Tag{}
-  err = GetPieResource(BuildAllTagsRequest(token), &tags)
+  err = getPieResource(buildAllTagsRequest(token), &tags)
   return
 }
 
+// Returns all tags for the current user. Returns raw response.
 func GetRawAllTags(token string) (res string, err error) {
-  res, err = GetRawPieResource(BuildAllTagsRequest(token))
+  res, err = getRawPieResource(buildAllTagsRequest(token))
   return
 }
