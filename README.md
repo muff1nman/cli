@@ -14,11 +14,13 @@ Usage:
   pie [OPTIONS] <command> [command-OPTIONS]
 
 Application Options:
-      --db=   The database file to use. (pie.db)
-      --url=  The API url prefix, including version. (https://api.piethis.com/v1)
+      --db=       The database file to use. (pie.db)
+      --url=      The API url prefix, including version. (https://api.piethis.com/v1)
+      --raw       Returns raw (json) responses. (false)
+
 
 Help Options:
-  -h, --help  Show this help message
+  -h, --help      Show this help message
 
 Available commands:
   all-tags

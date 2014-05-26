@@ -11,6 +11,7 @@ import (
 type Options struct {
   Storage string `long:"db" default:"pie.db" description:"The database file to use."`
   UrlPrefix string `long:"url" default:"https://api.piethis.com/v1" description:"The API url prefix, including version."`
+  Raw bool `long:"raw" default:"false" description:"Returns raw (json) responses."`
 
   Login struct {
     Email string `short:"e" long:"email" description:"Your e-mail address to login." required:"true"`
@@ -65,19 +66,43 @@ func Run() (err error) {
   case "new-post":
     err = newPost(options, db)
   case "stream":
-    err = stream(options, db)
+    if options.Raw {
+      err = rawStream(options, db)
+    } else {
+      err = stream(options, db)
+    }
   case "comments":
-    err = comments(options, db)
+    if options.Raw {
+      err = rawComments(options, db)
+    } else {
+      err = comments(options, db)
+    }
   case "notifications":
-    err = notifications(options, db)
+    if options.Raw {
+      err = rawNotifications(options, db)
+    } else {
+      err = notifications(options, db)
+    }
   case "new-comment":
     err = newComment(options, db)
   case "all-tags":
-    err = allTags(options, db)
+    if options.Raw {
+      err = rawAllTags(options, db)
+    } else {
+      err = allTags(options, db)
+    }
   case "my-tags":
-    err = myTags(options, db)
+    if options.Raw {
+      err = rawMyTags(options, db)
+    } else {
+      err = myTags(options, db)
+    }
   case "company":
-    err = company(options, db)
+    if options.Raw {
+      err = rawCompany(options, db)
+    } else {
+      err = company(options, db)
+    }
   }
   return
 }
@@ -126,6 +151,14 @@ func stream(options *Options, db *Db) (err error) {
   return
 }
 
+func rawStream(options *Options, db *Db) (err error) {
+  posts, err := pie.RawStream(db.Token)
+  if err != nil { return }
+
+  fmt.Println(posts)
+  return
+}
+
 func comments(options *Options, db *Db) (err error) {
   comments, err := pie.GetComments(options.Comments.PostId, db.Token)
   if err != nil { return }
@@ -133,6 +166,14 @@ func comments(options *Options, db *Db) (err error) {
   for _, comment := range comments {
     fmt.Printf("From: %d\n%s\n\n", comment.UserId, comment.Text)
   }
+  return
+}
+
+func rawComments(options *Options, db *Db) (err error) {
+  comments, err := pie.GetRawComments(options.Comments.PostId, db.Token)
+  if err != nil { return }
+
+  fmt.Println(comments)
   return
 }
 
@@ -155,6 +196,14 @@ func notifications(options *Options, db *Db) (err error) {
   return
 }
 
+func rawNotifications(options *Options, db *Db) (err error) {
+  notifications, err := pie.GetRawNotifications(db.UserId, db.Token)
+  if err != nil { return }
+
+  fmt.Println(notifications)
+  return
+}
+
 func allTags(options *Options, db *Db) (err error) {
   tags, err := pie.GetAllTags(db.Token)
   if err != nil { return }
@@ -162,6 +211,14 @@ func allTags(options *Options, db *Db) (err error) {
   for _, tag := range tags {
     fmt.Printf("%s (%d)\n", tag.Name, tag.NumPosts)
   }
+  return
+}
+
+func rawAllTags(options *Options, db *Db) (err error) {
+  tags, err := pie.GetRawAllTags(db.Token)
+  if err != nil { return }
+
+  fmt.Println(tags)
   return
 }
 
@@ -175,10 +232,26 @@ func myTags(options *Options, db *Db) (err error) {
   return
 }
 
+func rawMyTags(options *Options, db *Db) (err error) {
+  tags, err := pie.GetRawOwnTags(db.UserId, db.Token)
+  if err != nil { return }
+
+  fmt.Println(tags)
+  return
+}
+
 func company(options *Options, db *Db) (err error) {
   company, err := pie.GetCompany(options.Company.CompanyId, db.Token)
   if err != nil { return }
 
   fmt.Printf("%s (%s)\n", company.Name, company.Domain)
+  return
+}
+
+func rawCompany(options *Options, db *Db) (err error) {
+  company, err := pie.GetRawCompany(options.Company.CompanyId, db.Token)
+  if err != nil { return }
+
+  fmt.Println(company)
   return
 }
