@@ -13,13 +13,9 @@ type Company struct {
   CreatedAt time.Time `json:"created_at"`
 }
 
-func companyUrl (id int) string {
-  return fmt.Sprintf("/companies/%d", id)
-}
-
-func buildCompanyRequest(id int, token string) *pieGetRequest {
-  return &pieGetRequest{
-    Url: companyUrl(id),
+func buildCompanyRequest(id int, token string) *request {
+  return &request{
+    Url: fmt.Sprintf("/companies/%d", id),
     Token: token,
   }
 }
@@ -27,12 +23,12 @@ func buildCompanyRequest(id int, token string) *pieGetRequest {
 // Get a company by ID
 func GetCompany(id int, token string) (company *Company, err error) {
   company = &Company{}
-  err = getPieResource(buildCompanyRequest(id, token), company)
+  err = buildCompanyRequest(id, token).doGet(company)
   return
 }
 
 // Get a company by ID. Returns a row response.
 func GetRawCompany(id int, token string) (res string, err error) {
-  res, err = getRawPieResource(buildCompanyRequest(id, token))
+  res, err = buildCompanyRequest(id, token).doGetRaw()
   return
 }

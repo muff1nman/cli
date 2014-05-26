@@ -19,11 +19,11 @@ func Login(email string, password string) (session *Session, err error) {
     Password: password,
   }
   session = &Session{}
-  req := &piePostRequest{
+  req := &request{
     Url: "/sessions",
     Payload: payload,
   }
 
-  err = postPieResource(req, session)
+  err = req.doPost(session)
   return
 }

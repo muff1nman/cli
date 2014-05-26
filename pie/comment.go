@@ -16,20 +16,11 @@ type newCommentReq struct {
   Text string `json:"text"`
 }
 
-func buildCommentsRequest(post_id int, token string) *pieGetRequest {
-  return &pieGetRequest{
-    Url: getCommentsUrl(post_id),
+func buildCommentsRequest(post_id int, token string) *request {
+  return &request{
+    Url: fmt.Sprintf("/posts/%d/comments", post_id),
     Token: token,
   }
-}
-
-
-func getNewCommentUrl(post_id int) string {
-  return fmt.Sprintf("/posts/%d/comments", post_id)
-}
-
-func getCommentsUrl(post_id int) string {
-  return fmt.Sprintf("/posts/%d/comments", post_id)
 }
 
 // Creates a new comment in a given post.
@@ -38,25 +29,25 @@ func CreateComment(post_id int, text string, token string) (comment *Comment, er
     Text: text,
   }
   comment = &Comment{}
-  req := &piePostRequest{
-    Url: getNewCommentUrl(post_id),
+  req := &request{
+    Url: fmt.Sprintf("/posts/%d/comments", post_id),
     Payload: payload,
     Token: token,
   }
 
-  err = postPieResource(req, comment)
+  err = req.doPost(comment)
   return
 }
 
 // Returns all comments for a given post.
 func GetComments(post_id int, token string) (comments []*Comment, err error) {
   comments = []*Comment{}
-  err = getPieResource(buildCommentsRequest(post_id, token), &comments)
+  err = buildCommentsRequest(post_id, token).doGet(&comments)
   return
 }
 
 // Returns all comments for a given post in raw format.
 func GetRawComments(post_id int, token string) (res string, err error) {
-  res, err = getRawPieResource(buildCommentsRequest(post_id, token))
+  res, err = buildCommentsRequest(post_id, token).doGetRaw()
   return
 }

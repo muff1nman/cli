@@ -15,13 +15,9 @@ type Notification struct {
   CreatedAt time.Time `json:"created_at"`
 }
 
-func notificationsUrl (user_id int) string {
-  return fmt.Sprintf("/users/%d/notifications", user_id)
-}
-
-func buildNotificationsRequest(user_id int, token string) *pieGetRequest {
-  return &pieGetRequest{
-    Url: notificationsUrl(user_id),
+func buildNotificationsRequest(user_id int, token string) *request {
+  return &request{
+    Url: fmt.Sprintf("/users/%d/notifications", user_id),
     Token: token,
   }
 }
@@ -29,12 +25,12 @@ func buildNotificationsRequest(user_id int, token string) *pieGetRequest {
 // Gets all notifications for the given user.
 func GetNotifications(user_id int, token string) (notifications []*Notification, err error) {
   notifications = []*Notification{}
-  err = getPieResource(buildNotificationsRequest(user_id, token), &notifications)
+  err = buildNotificationsRequest(user_id, token).doGet(&notifications)
   return
 }
 
 // Gets all notifications for the given user. Returns the raw response
 func GetRawNotifications(user_id int, token string) (res string, err error) {
-  res, err = getRawPieResource(buildNotificationsRequest(user_id, token))
+  res, err = buildNotificationsRequest(user_id, token).doGetRaw()
   return
 }

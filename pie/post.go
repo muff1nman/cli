@@ -31,12 +31,8 @@ type newPostReq struct {
 type updatePostReq struct {
 }
 
-func getUpdatePostUrl(id int) string {
-  return fmt.Sprintf("/posts/%d", id)
-}
-
-func buildStreamRequest(token string) *pieGetRequest{
-  return &pieGetRequest{
+func buildStreamRequest(token string) *request{
+  return &request{
     Url: "/posts",
     Token: token,
     ExtraParams: map[string]string{"type": "stream"},
@@ -46,13 +42,13 @@ func buildStreamRequest(token string) *pieGetRequest{
 // Returns the stream posts for the current user.
 func Stream(token string) (posts []*Post, err error) {
   posts = []*Post{}
-  err = getPieResource(buildStreamRequest(token), &posts)
+  err = buildStreamRequest(token).doGet(&posts)
   return
 }
 
 // Returns the stream posts for the current user. Returns raw response.
 func RawStream(token string) (res string, err error) {
-  res, err = getRawPieResource(buildStreamRequest(token))
+  res, err = buildStreamRequest(token).doGetRaw()
   return
 }
 
@@ -62,13 +58,13 @@ func CreatePost(topic string, token string) (post *Post, err error) {
     Title: topic,
   }
   post = &Post{}
-  req := &piePostRequest{
+  req := &request{
     Url: "/posts",
     Payload: payload,
     Token: token,
   }
 
-  err = postPieResource(req, post)
+  err = req.doPost(post)
   return
 }
 
@@ -77,12 +73,12 @@ func PublishPost(id int, token string) (post *Post, err error) {
   payload := &updatePostReq {
   }
   post = &Post{}
-  req := &piePutRequest{
-    Url: getUpdatePostUrl(id),
+  req := &request{
+    Url: fmt.Sprintf("/posts/%d", id),
     Payload: payload,
     Token: token,
   }
 
-  err = putPieResource(req, post)
+  err = req.doPut(post)
   return
 }

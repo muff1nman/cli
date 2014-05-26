@@ -18,24 +18,16 @@ type User struct {
   CreatedAt time.Time `json:"created_at"`
 }
 
-func userUrl (id int) string {
-  return fmt.Sprintf("/users/%d", id)
-}
-
-func companyUsersUrl (company_id int) string {
-  return fmt.Sprintf("/companies/%d/users", company_id)
-}
-
-func buildUserRequest(id int, token string) *pieGetRequest{
-  return &pieGetRequest{
-    Url: userUrl(id),
+func buildUserRequest(id int, token string) *request{
+  return &request{
+    Url: fmt.Sprintf("/users/%d", id),
     Token: token,
   }
 }
 
-func buildCompanyUsersRequest(company_id int, token string) *pieGetRequest{
-  return &pieGetRequest{
-    Url: companyUsersUrl(company_id),
+func buildCompanyUsersRequest(company_id int, token string) *request{
+  return &request{
+    Url: fmt.Sprintf("/companies/%d/users", company_id),
     Token: token,
   }
 }
@@ -43,25 +35,25 @@ func buildCompanyUsersRequest(company_id int, token string) *pieGetRequest{
 // Gets a user by ID.
 func GetUser(id int, token string) (user *User, err error) {
   user = &User{}
-  err = getPieResource(buildUserRequest(id, token), user)
+  err = buildUserRequest(id, token).doGet(user)
   return
 }
 
 // Gets a user by ID. Returns a raw response.
 func GetRawUser(id int, token string) (res string, err error) {
-  res, err = getRawPieResource(buildUserRequest(id, token))
+  res, err = buildUserRequest(id, token).doGetRaw()
   return
 }
 
 // Gets all users for a given company.
 func GetCompanyUsers(company_id int, token string) (users []*User, err error) {
   users = []*User{}
-  err = getPieResource(buildCompanyUsersRequest(company_id, token), &users)
+  err = buildCompanyUsersRequest(company_id, token).doGet(&users)
   return
 }
 
 // Gets all users for a given company. Returns a raw response.
 func GetRawCompanyUsers(company_id int, token string) (res string, err error) {
-  res, err = getRawPieResource(buildCompanyUsersRequest(company_id, token))
+  res, err = buildCompanyUsersRequest(company_id, token).doGetRaw()
   return
 }

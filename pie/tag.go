@@ -10,20 +10,16 @@ type Tag struct {
   LastActivity time.Time `json:"last_activity"`
 }
 
-func getOwnTagsUrl(user_id int) string {
-  return fmt.Sprintf("/users/%d/tags", user_id)
-}
-
-func buildAllTagsRequest(token string) *pieGetRequest{
-  return &pieGetRequest{
+func buildAllTagsRequest(token string) *request{
+  return &request{
     Url: "/tags",
     Token: token,
   }
 }
 
-func buildOwnTagsRequest(user_id int, token string) *pieGetRequest{
-  return &pieGetRequest{
-    Url: getOwnTagsUrl(user_id),
+func buildOwnTagsRequest(user_id int, token string) *request{
+  return &request{
+    Url: fmt.Sprintf("/users/%d/tags", user_id),
     Token: token,
   }
 }
@@ -31,25 +27,25 @@ func buildOwnTagsRequest(user_id int, token string) *pieGetRequest{
 // Returns all tags for the current user.
 func GetAllTags(token string) (tags []*Tag, err error) {
   tags = []*Tag{}
-  err = getPieResource(buildAllTagsRequest(token), &tags)
+  err = buildAllTagsRequest(token).doGet(&tags)
   return
 }
 
 // Returns all tags for the current user. Returns raw response.
 func GetRawAllTags(token string) (res string, err error) {
-  res, err = getRawPieResource(buildAllTagsRequest(token))
+  res, err = buildAllTagsRequest(token).doGetRaw()
   return
 }
 
 // Returns all tags for the current user.
 func GetOwnTags(user_id int, token string) (tags []*Tag, err error) {
   tags = []*Tag{}
-  err = getPieResource(buildOwnTagsRequest(user_id, token), &tags)
+  err = buildOwnTagsRequest(user_id, token).doGet(&tags)
   return
 }
 
 // Returns all tags for the current user. Returns raw response.
 func GetRawOwnTags(user_id int, token string) (res string, err error) {
-  res, err = getRawPieResource(buildOwnTagsRequest(user_id, token))
+  res, err = buildOwnTagsRequest(user_id, token).doGetRaw()
   return
 }
