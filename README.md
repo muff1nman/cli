@@ -3,7 +3,7 @@ Piethis.com CLI
 
 Command line tool to interact with the [piethis.com](https://www.piethis.com) API.
 
-This project also contains the Go library you can use in your own projects. Have a look at the [Go Doc]().
+This project also contains the Go library you can use in your own projects. Have a look at the [Go Doc](http://godoc.org/github.com/piethis/cli/pie).
 
 
 Help commands
