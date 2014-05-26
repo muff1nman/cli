@@ -18,7 +18,6 @@ Application Options:
       --url=      The API url prefix, including version. (https://api.piethis.com/v1)
       --raw       Returns raw (json) responses. (false)
 
-
 Help Options:
   -h, --help      Show this help message
 
