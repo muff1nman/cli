@@ -123,10 +123,7 @@ func login(options *Options, db *Db) (err error) {
 }
 
 func newPost(options *Options, db *Db) (err error) {
-  post, err := pie.CreatePost(options.NewPost.Topic, db.Token)
-  if err != nil { return }
-
-  post, err = pie.PublishPost(post.Id, db.Token)
+  post, err := pie.CreatePost(options.NewPost.Topic, db.Token, false)
   if err != nil { return }
 
   if options.NewPost.Thoughts != "" {

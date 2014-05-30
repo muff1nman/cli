@@ -26,6 +26,7 @@ type Post struct {
 
 type newPostReq struct {
   Title string `json:"url"`
+  Pending bool `json:"pending"`
 }
 
 type updatePostReq struct {
@@ -52,10 +53,12 @@ func RawStream(token string) (res string, err error) {
   return
 }
 
-// Creates a new post with a topic.
-func CreatePost(topic string, token string) (post *Post, err error) {
+// Creates a new post with a topic. If pending is true, it creates a post only visible by the owner.
+// Use PublishPost to make it visible to everyone.
+func CreatePost(topic string, token string, pending bool) (post *Post, err error) {
   payload := &newPostReq {
     Title: topic,
+    Pending: pending,
   }
   post = &Post{}
   req := &request{
