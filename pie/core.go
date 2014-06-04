@@ -2,11 +2,16 @@ package pie
 
 import (
   "errors"
+  "net/http"
   "github.com/jmcvetta/napping"
 )
 var (
   UrlPrefix = "https://api.piethis.com/v1"
+  session = &napping.Session{
+    Header: &http.Header{"Pie-Online": []string{"1",}},
+  }
 )
+
 
 type request struct {
   Url string
@@ -43,7 +48,7 @@ func (this request) getParams() (params napping.Params) {
 
 func (this request) doGet(response interface{}) (err error) {
   params := this.getParams()
-  res, err := napping.Get(this.getUrl(), &params, response, nil)
+  res, err := session.Get(this.getUrl(), &params, response, nil)
   if err != nil { return }
   if res.Status() != 200 {
     err = errors.New("Status code is not 200")
@@ -53,7 +58,7 @@ func (this request) doGet(response interface{}) (err error) {
 
 func (this request) doGetRaw() (body string, err error) {
   params := this.getParams()
-  res, err := napping.Get(this.getUrl(), &params, nil, nil)
+  res, err := session.Get(this.getUrl(), &params, nil, nil)
   if err != nil { return }
   if res.Status() != 200 {
     err = errors.New("Status code is not 200")
@@ -63,7 +68,7 @@ func (this request) doGetRaw() (body string, err error) {
 }
 
 func (this request) doPost(response interface{}) (err error) {
-  resp, err := napping.Post(this.getUrlWithToken(), this.Payload, response, nil)
+  resp, err := session.Post(this.getUrlWithToken(), this.Payload, response, nil)
   if err != nil { return }
   if resp.Status() != 201 {
     err = errors.New("Status code is not 201")
@@ -72,7 +77,7 @@ func (this request) doPost(response interface{}) (err error) {
 }
 
 func (this request) doPut(response interface{}) (err error) {
-  resp, err := napping.Put(this.getUrlWithToken(), this.Payload, response, nil)
+  resp, err := session.Put(this.getUrlWithToken(), this.Payload, response, nil)
   if err != nil { return }
   if resp.Status() != 200 {
     err = errors.New("Status code is not 200")
