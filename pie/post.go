@@ -36,7 +36,7 @@ func buildStreamRequest(token string) *request{
   return &request{
     Url: "/posts",
     Token: token,
-    ExtraParams: map[string]string{"type": "stream"},
+    ExtraParams: map[string]string{"type": "recent_stream"},
   }
 }
 
