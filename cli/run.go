@@ -24,7 +24,7 @@ type Options struct {
   Stream struct {
   } `command:"stream"`
   Search struct {
-    Query string `short:"q" long:"query" description:"Search query"`
+    Query string `short:"q" long:"query" description:"Search query" required:"true"`
   } `command:"search"`
   Notifications struct {
   } `command:"notifications"`
@@ -52,11 +52,15 @@ func Run() (err error) {
     os.Exit(1)
   }
 
-  pie.UrlPrefix = options.UrlPrefix
-
   action := parser.Command.Active.Name
 
   db, err := LoadDb(options.Storage)
+
+  if db.ApiUrl != "" {
+    pie.UrlPrefix = db.ApiUrl
+  } else {
+    pie.UrlPrefix = options.UrlPrefix
+  }
 
   if db.Token == "" && action != "login" {
     err = errors.New("You didn't login yet.")
@@ -127,6 +131,7 @@ func login(options *Options, db *Db) (err error) {
 
   db.Token = session.Token
   db.UserId = session.UserId
+  db.ApiUrl = options.UrlPrefix
   SaveDb(db, options.Storage)
   return
 }

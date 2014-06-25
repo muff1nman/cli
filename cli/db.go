@@ -8,6 +8,7 @@ import(
 type Db struct {
   UserId int
   Token string
+  ApiUrl string
 }
 
 func SaveDb(db *Db, filename string) (err error) {

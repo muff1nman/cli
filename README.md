@@ -31,6 +31,7 @@ Available commands:
   new-post
   notifications
   stream
+  search
 
 [comments command options]
       -p, --post= ID of the post to add the comment
@@ -44,5 +45,7 @@ Available commands:
 [new-post command options]
       -t, --topic=    Topic to start a new chat.
           --thoughts= First thoughts for the new chat.
+[search command options]
+      -q, --query= Search query
 ```
 
