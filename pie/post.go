@@ -40,6 +40,14 @@ func buildStreamRequest(token string) *request{
   }
 }
 
+func buildSearchRequest(q string, token string) *request{
+  return &request{
+    Url: "/posts",
+    Token: token,
+    ExtraParams: map[string]string{"type": "search", "q": q},
+  }
+}
+
 // Returns the stream posts for the current user.
 func Stream(token string) (posts []*Post, err error) {
   posts = []*Post{}
@@ -50,6 +58,19 @@ func Stream(token string) (posts []*Post, err error) {
 // Returns the stream posts for the current user. Returns raw response.
 func RawStream(token string) (res string, err error) {
   res, err = buildStreamRequest(token).doGetRaw()
+  return
+}
+
+// Returns the search posts for the current user.
+func Search(q string, token string) (posts []*Post, err error) {
+  posts = []*Post{}
+  err = buildSearchRequest(q, token).doGet(&posts)
+  return
+}
+
+// Returns the search posts for the current user. Returns raw response.
+func RawSearch(q string, token string) (res string, err error) {
+  res, err = buildSearchRequest(q, token).doGetRaw()
   return
 }
 

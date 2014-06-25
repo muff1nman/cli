@@ -23,6 +23,9 @@ type Options struct {
   } `command:"new-post"`
   Stream struct {
   } `command:"stream"`
+  Search struct {
+    Query string `short:"q" long:"query" description:"Search query"`
+  } `command:"search"`
   Notifications struct {
   } `command:"notifications"`
   Comments struct {
@@ -70,6 +73,12 @@ func Run() (err error) {
       err = rawStream(options, db)
     } else {
       err = stream(options, db)
+    }
+  case "search":
+    if options.Raw {
+      err = rawSearch(options, db)
+    } else {
+      err = search(options, db)
     }
   case "comments":
     if options.Raw {
@@ -143,13 +152,31 @@ func stream(options *Options, db *Db) (err error) {
   if err != nil { return }
 
   for _, post := range posts {
-    fmt.Printf("{%d} %s\ncomments: %d\n\n", post.Id, post.Title, post.CommentsCount)
+    fmt.Printf("{%d} %s\n", post.Id, post.Title)
   }
   return
 }
 
 func rawStream(options *Options, db *Db) (err error) {
   posts, err := pie.RawStream(db.Token)
+  if err != nil { return }
+
+  fmt.Println(posts)
+  return
+}
+
+func search(options *Options, db *Db) (err error) {
+  posts, err := pie.Search(options.Search.Query, db.Token)
+  if err != nil { return }
+
+  for _, post := range posts {
+    fmt.Printf("{%d} %s\n", post.Id, post.Title)
+  }
+  return
+}
+
+func rawSearch(options *Options, db *Db) (err error) {
+  posts, err := pie.RawSearch(options.Search.Query, db.Token)
   if err != nil { return }
 
   fmt.Println(posts)
