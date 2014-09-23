@@ -1,7 +1,7 @@
 package cli
 
 import (
-  "../pie"
+  "github.com/piethis/cli/pie"
   "os"
   "fmt"
   "errors"

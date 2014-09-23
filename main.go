@@ -3,7 +3,7 @@ package main
 import (
   "os"
   "fmt"
-  "./cli"
+  "github.com/piethis/cli/cli"
 )
 
 func main() {
